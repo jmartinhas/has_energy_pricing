@@ -136,9 +136,10 @@ class EssentPriceProvider(PriceProvider):
                         ) from err
 
             if not electricity_prices:
-                raise ProviderResponseError(
-                    f"Essent response contains no electricity prices for {date_str}"
-                )
+                # Essent includes a day entry (e.g. tomorrow) with an empty
+                # tariffs array before that day's prices are published.
+                # Skip it rather than failing the whole fetch.
+                continue
 
             result[date_str] = ProviderPrices(
                 electricity=EnergyPriceSeries(

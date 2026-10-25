@@ -85,6 +85,10 @@ gh release create vX.Y.Z --title "vX.Y.Z" --notes-file "C:\Users\gokha\AppData\L
 
 ## Changelog
 
+### v0.25.1
+
+- **Fix "invalid_response" during setup / fetch when Essent hasn't published tomorrow's prices yet:** Essent's multi-day response always includes a day entry for tomorrow, but before day-ahead prices are published that entry has an empty `tariffs` array. `_parse_response` treated any day with zero electricity tariffs as a hard `ProviderResponseError`, which aborted parsing for *all* days in the response (not just the empty one) — breaking config flow setup and ongoing coordinator refreshes alike. It now skips an unpublished day instead of failing the whole fetch.
+
 ### v0.25.0
 
 - **Auto-rebuild installed dashboard on setup:** if the Energy Prices dashboard already exists, `async_setup_entry` now rebuilds it on every HA start/upgrade so new or changed cards (like the built-in price-curve fallback) are reflected without re-running the install. It never creates a dashboard for users who didn't opt in (`rebuild_installed_dashboard` only refreshes when `is_dashboard_installed`).

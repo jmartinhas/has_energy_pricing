@@ -1,6 +1,6 @@
 # Dynamic Energy Prices
 
-[![Coverage Status](https://coveralls.io/repos/github/gokhancelik/energy-api-integrations/badge.svg?branch=main)](https://coveralls.io/github/gokhancelik/energy-api-integrations?branch=main)
+[![Coverage Status](https://coveralls.io/repos/github/jmartinhas/has_energy_pricing/badge.svg?branch=main)](https://coveralls.io/github/jmartinhas/has_energy_pricing?branch=main)
 [![Quality Scale](https://img.shields.io/badge/quality%20scale-platinum-%234285F4)](https://developers.home-assistant.io/docs/core/integration-quality-scale/)
 
 A Home Assistant custom integration for dynamic/real-time energy prices in the
@@ -38,7 +38,7 @@ pricing API — it cannot be implemented as a dynamic price provider.
 
 1. Ensure [HACS](https://hacs.xyz) is installed.
 2. Go to **HACS > Integrations > Custom repositories**.
-3. Add `https://github.com/gokhancelik/energy-api-integrations` as
+3. Add `https://github.com/jmartinhas/has_energy_pricing` as
    category **Integration**.
 4. Click **Download** on the "Dynamic Energy Prices" integration.
 5. Restart Home Assistant.
