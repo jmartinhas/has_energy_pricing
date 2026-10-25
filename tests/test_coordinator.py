@@ -57,6 +57,7 @@ async def test_coordinator_update_success(hass: Any) -> None:
 
         coordinator = DynamicPriceCoordinator(hass, entry)
         result = await coordinator._async_update_data()
+        await coordinator.async_shutdown()
 
         assert result is not None
         mock_fetch.assert_called_once()
@@ -90,6 +91,7 @@ async def test_coordinator_update_failure_connection(hass: Any) -> None:
         coordinator = DynamicPriceCoordinator(hass, entry)
         with pytest.raises(UpdateFailed, match="Connection error"):
             await coordinator._async_update_data()
+        await coordinator.async_shutdown()
 
 
 @pytest.mark.asyncio
@@ -120,6 +122,7 @@ async def test_coordinator_update_failure_response(hass: Any) -> None:
         coordinator = DynamicPriceCoordinator(hass, entry)
         with pytest.raises(UpdateFailed, match="Response error"):
             await coordinator._async_update_data()
+        await coordinator.async_shutdown()
 
 
 @pytest.mark.asyncio
@@ -165,6 +168,7 @@ async def test_coordinator_tomorrow_data_populated(hass: Any) -> None:
 
         coordinator = DynamicPriceCoordinator(hass, entry)
         await coordinator._async_update_data()
+        await coordinator.async_shutdown()
 
         # tomorrow + yesterday (Essent provides multi-day data)
         mock_fetch_tomorrow.assert_called()
@@ -212,6 +216,7 @@ async def test_coordinator_tomorrow_data_none_on_failure(hass: Any) -> None:
 
         coordinator = DynamicPriceCoordinator(hass, entry)
         await coordinator._async_update_data()
+        await coordinator.async_shutdown()
 
         assert coordinator.tomorrow_data is None
 
@@ -245,6 +250,8 @@ async def test_coordinator_issue_raised_after_consecutive_failures(hass: Any) ->
             for i in range(CONSECUTIVE_FAILURE_LIMIT):
                 with pytest.raises(UpdateFailed):
                     await coordinator._async_update_data()
+
+        await coordinator.async_shutdown()
 
         issues = getattr(hass, "issues", None)
         if issues is not None:
@@ -313,6 +320,8 @@ async def test_coordinator_issue_cleared_on_success(hass: Any) -> None:
                     "dynamic_energy_prices", "provider_unreachable"
                 )
 
+        await coordinator.async_shutdown()
+
 
 @pytest.mark.asyncio
 async def test_coordinator_no_issue_below_threshold(hass: Any) -> None:
@@ -343,6 +352,8 @@ async def test_coordinator_no_issue_below_threshold(hass: Any) -> None:
             for i in range(CONSECUTIVE_FAILURE_LIMIT - 1):
                 with pytest.raises(UpdateFailed):
                     await coordinator._async_update_data()
+
+        await coordinator.async_shutdown()
 
         issues = getattr(hass, "issues", None)
         if issues is not None:
@@ -388,6 +399,7 @@ async def test_coordinator_last_successful_data(hass: Any) -> None:
             assert coordinator.last_successful_data is None
 
             await coordinator._async_update_data()
+            await coordinator.async_shutdown()
 
             assert coordinator.last_successful_data is not None
             assert coordinator.last_successful_data.electricity.prices[0].total_price == 0.1
@@ -432,6 +444,7 @@ async def test_coordinator_last_update_time(hass: Any) -> None:
             assert coordinator.last_update_time is None
 
             await coordinator._async_update_data()
+            await coordinator.async_shutdown()
 
             assert coordinator.last_update_time is not None
             assert isinstance(coordinator.last_update_time, datetime)
